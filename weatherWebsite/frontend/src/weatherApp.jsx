@@ -13,9 +13,12 @@ import tornado from "/assets/tornado.png"
 import drizzle from "/assets/drizzle.png"
 
 import styles from './App.module.css'
+import { useContext } from "react";
+import { myContext } from "./cityName.jsx";
 
 function WeatherApp(){
-    const [city, setCity] = useState("")
+
+    const {city, setCity} = useContext(myContext);
     const [data, setData] = useState(null)
     const [backimage, setBackImage] = useState(img)
     const [emoji, setEmoji] = useState();
@@ -79,6 +82,11 @@ function WeatherApp(){
         setBackImage(weatherImages[weatherCondition] || defaultImage);
     }, [data])
 
+    function degree(deg){
+        const direction = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW", "N"];
+
+        return direction[Math.round(deg/22.5)]
+    }
     return(
         <div className={styles.body} style={{
                 backgroundImage: `url(${backimage})`,
@@ -103,7 +111,8 @@ function WeatherApp(){
                 </div>
                 <p>Humidity 💧: {data?.main?.humidity ? (data.main.humidity) : "" }%</p>
                 <div className={styles.wind}>
-                    <p>Wind: {data?.wind?.speed ? (data.main.humidity) : "" } </p>
+                    <p>🍃 Wind : {data?.wind?.speed ? (data.wind.speed) : "" } km/h </p>
+                    <p>🧭 Direction : {degree(data?.wind?.deg ? (data.wind.deg) : "")}</p>
                 </div>
                 <label>City Name:</label>
                 <select value={city} onChange={(e) => setCity(e.target.value)}>
@@ -140,7 +149,6 @@ function WeatherApp(){
                     <option>Dhanbad</option>
                     <option>Amritsar</option>
                     <option>Navi Mumbai</option>
-                    <option>Allahabad (Prayagraj)</option>
                     <option>Ranchi</option>
                     <option>Howrah</option>
                     <option>Coimbatore</option>
